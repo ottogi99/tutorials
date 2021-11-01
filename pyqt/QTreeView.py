@@ -43,6 +43,7 @@ import sys
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 from pyqt.ConfigReader.IniReader import *
 
 
@@ -52,13 +53,10 @@ class MainWindow(QMainWindow):
         self.setGeometry(100, 100, 600, 300)
         self.setWindowTitle('Test Signal')
 
-        self.reader = IniReader()
+        self.treeView = QTreeView()
 
         # self.etc_load()
         # self.sys_load()
-        self.read_ini()
-
-    def read_ini(self):
         self.ini_file = './ini/yongdam.ini'
         self.sections = {
             'MANAGER': ['name', 'email', 'contact'],
@@ -69,9 +67,47 @@ class MainWindow(QMainWindow):
             'DEVICE_SERVER': ['name', 'default_ip', 'ip', 'model', 'serial', 'id', 'pwd']
         }
 
-        self.reader.setFile(self.ini_file)
-        self.reader.setSections(self.sections)
-        print(self.reader.read())
+        self.data = self.read_ini(self.ini_file, self.sections)
+        self.make_tree(self.data)
+        self.setCentralWidget(self.treeView)
+
+    def read_ini(self, ini_file, sections):
+        reader = IniReader()
+        reader.setFile(ini_file)
+        reader.setSections(sections)
+        # print(reader.read())
+        return reader.read()
+
+    def make_tree(self, data):
+        model = QStandardItemModel()
+        model.setHorizontalHeaderLabels(['col1', 'col2', 'col3'])
+        model.invisibleRootItem()
+        self.treeView.setModel(model)
+        # print(data)
+
+        # popluate data
+        # for key, sections in self.sections.items():
+        #     parent = QStandardItem(key)
+        #     for section in sections:
+        #         parent.appendRow(QStandardItem(section))
+        #     model.appendRow(parent)
+
+        for section, items in data.items():
+            parent = QStandardItem(section)
+            for item, values in items.items():
+                row = []
+                column1 = QStandardItem(item)
+                row.append(column1)
+                for value in values:
+                    # print(value)
+                    # parent.appendRow(QStandardItem(value))
+                    column2 = QStandardItem(value)
+                    # parent.appendRow([column1, column2])
+                    # parent.appendColumn(QStandardItem(value))
+                    row.append(QStandardItem(value))
+                parent.appendRow(row)
+            # parent.appendRows(item[0], item[1], item[2])
+            model.appendRow(parent)
 
 
     def etc_load(self):
@@ -82,10 +118,8 @@ class MainWindow(QMainWindow):
         while it.hasNext():
             print(it.next())
 
-
     def ini_load(self):
         ini_path = QDir("./ini/")
-
 
     def sys_load(self):
         # IteratorFlag

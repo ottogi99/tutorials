@@ -47,15 +47,25 @@ class IniReader:
         except (FileExistsError, FileNotFoundError) as e:
             print(e)
 
+        result = {}
         for section, items in self._sections.items():
             if section in config:
+                # print(section)
+                # {'name': [''], 'email': [''], 'contact': ['']}
+                _items = {}
                 for item in items:
                     if item in config[section]:
                         values = config[section][item].split('\n')
-                        value = [v for v in values]
+                        # value = [v for v in values]
                         # print("[{0}]{1}={2}".format(section, item, config[section][item]))
                         # print("[{0}]{1}={2}".format(section, item, value))
-                        result.append((section, item, value))
+                        _items[item] = values
+                        # result.append((section, item, value))
+
+                result[section] = _items
+
+        # for section, items in _sections.items():
+        #     print(section, items)
 
         return result
 
