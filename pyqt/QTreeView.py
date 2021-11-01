@@ -50,7 +50,7 @@ from pyqt.ConfigReader.IniReader import *
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setGeometry(100, 100, 600, 300)
+        self.setGeometry(100, 100, 600, 600)
         self.setWindowTitle('Test Signal')
 
         self.treeView = QTreeView()
@@ -59,56 +59,42 @@ class MainWindow(QMainWindow):
         # self.sys_load()
         self.ini_file = './ini/yongdam.ini'
         self.sections = {
-            'MANAGER': ['name', 'email', 'contact'],
-            'NAC_MANAGER': ['name', 'email', 'contact'],
-            'MSMT_SERVER': ['name', 'ip', 'port', 'dns', 'id', 'pwd'],
-            'TM_SERVER': ['name', 'ip', 'port', 'id', 'pwd'],
-            'SMART_TM': ['name', 'ip', 'port', 'id', 'pwd'],
-            'DEVICE_SERVER': ['name', 'default_ip', 'ip', 'model', 'serial', 'id', 'pwd']
+            '담당자': ['이름', '이메일', '연락처'],
+            'NAC 담당자': ['이름', '이메일', '연락처'],
+            '매설계기 서버': ['이름', 'IP', 'PORT', 'DNS', 'ID', 'PASSWORD'],
+            'TM 서버': ['이름', 'IP', 'PORT', 'ID', 'PASSWORD'],
+            'SmartTM': ['이름', 'IP', 'PORT', 'ID', 'PASSWORD'],
+            '디바이스 서버': ['이름', 'DEFAULT_IP', 'IP', 'MODEL', 'SERIAL', 'ID', 'PASSWORD']
         }
 
-        self.data = self.read_ini(self.ini_file, self.sections)
-        self.make_tree(self.data)
+        # self.data = self.read_ini(self.ini_file, self.sections)
+        # self.make_tree(self.data)
         self.setCentralWidget(self.treeView)
 
-    def read_ini(self, ini_file, sections):
+        self.sys_load()
+
+    def read_ini(self, ini_file):
         reader = IniReader()
         reader.setFile(ini_file)
-        reader.setSections(sections)
+        reader.setSections(self.sections)
         # print(reader.read())
         return reader.read()
 
     def make_tree(self, data):
         model = QStandardItemModel()
-        model.setHorizontalHeaderLabels(['col1', 'col2', 'col3'])
+        model.setHorizontalHeaderLabels(['구분', '항목1', '항목2'])
         model.invisibleRootItem()
         self.treeView.setModel(model)
         # print(data)
 
         # popluate data
-        # for key, sections in self.sections.items():
-        #     parent = QStandardItem(key)
-        #     for section in sections:
-        #         parent.appendRow(QStandardItem(section))
-        #     model.appendRow(parent)
-
         for section, items in data.items():
             parent = QStandardItem(section)
             for item, values in items.items():
-                row = []
-                column1 = QStandardItem(item)
-                row.append(column1)
-                for value in values:
-                    # print(value)
-                    # parent.appendRow(QStandardItem(value))
-                    column2 = QStandardItem(value)
-                    # parent.appendRow([column1, column2])
-                    # parent.appendColumn(QStandardItem(value))
-                    row.append(QStandardItem(value))
+                row = [QStandardItem(item)] + [QStandardItem(value) for value in values]
                 parent.appendRow(row)
-            # parent.appendRows(item[0], item[1], item[2])
-            model.appendRow(parent)
 
+            model.appendRow(parent)
 
     def etc_load(self):
         absolute_path = QDir("C:/Shortcuts")    # Examples of absolute paths.
@@ -132,29 +118,55 @@ class MainWindow(QMainWindow):
         root_dir.setFilter(QDir.Files | QDir.Hidden | QDir.NoSymLinks)
         root_dir.setSorting(QDir.Size | QDir.Reversed)
 
-        for entry in root_dir.entryInfoList():
-            print("{0}, {1}".format(entry.size(), entry.fileName()))
+        root_dir = QDir("./ini")
+        filters = ['*.ini']
+        root_dir.setNameFilters(filters)
+        root_dir.setFilter(QDir.Files | QDir.NoSymLinks)
 
-        print('---root dir---')
-        print(root_dir.cd("Temp"))
-        print(root_dir.currentPath())
-        print(root_dir.dirName())
-        absolute_dir_path = QDir("C:/Repo/tutorials/pyqt/images")    # Examples of absolute paths.
-        relative_dir_path = QDir("./images")  # Examples of absolute paths.
-
-        it = QDirIterator(relative_dir_path, QDirIterator.Subdirectories)
+        # for entry in root_dir.entryInfoList():
+        #     print("{0}, {1}".format(entry.size(), entry.fileName()))
+        #
+        # print('---root dir---')
+        # print(root_dir.cd("Temp"))
+        # print(root_dir.currentPath())
+        # print(root_dir.dirName())
+        # absolute_dir_path = QDir("C:/Repo/tutorials/pyqt/images")    # Examples of absolute paths.
+        # relative_dir_path = QDir("./images")  # Examples of absolute paths.
+        #
+        # it = QDirIterator(relative_dir_path, QDirIterator.Subdirectories)
         # it = QDirIterator(absolute_dir_path, QDirIterator.Subdirectories)
+        it = QDirIterator(root_dir, QDirIterator.Subdirectories)
+
+        model = QStandardItemModel()
+        model.setHorizontalHeaderLabels(['구분', '항목1', '항목2'])
+        model.invisibleRootItem()
+        self.treeView.setModel(model)
+
         while it.hasNext():
             print('--start--')
-            print(it.next())
-            print(it.fileName())
-            print(it.filePath())
+            it.next()
+            fileName = it.fileName()
+            filePath = it.filePath()
+            data = self.read_ini(filePath)
+            # print(it.filePath())
             # QFileInfo ( https://doc.qt.io/qtforpython-5/PySide2/QtCore/QFileInfo.html#PySide2.QtCore.PySide2.QtCore.QFileInfo )
-            print(it.fileInfo())
+            # print(it.fileInfo())
             # # f = QFile(it.next())
             # # f.open(QIODevice.ReadOnly)
             # # print("{0}, {1}".format(f.fileName(), f.readAll()))
             # f.close()
+
+            # popluate data
+            parent = QStandardItem(it.fileInfo().baseName())
+            for section, items in data.items():
+                child = QStandardItem(section)
+                for item, values in items.items():
+                    row = [QStandardItem(item)] + [QStandardItem(value) for value in values]
+                    child.appendRow(row)
+
+                parent.appendRow(child)
+
+            model.appendRow(parent)
 
 
 if __name__ == "__main__":

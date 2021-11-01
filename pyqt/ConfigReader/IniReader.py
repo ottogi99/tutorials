@@ -75,6 +75,8 @@ if __name__ == "__main__":
     sections = {
         'MANAGER': ['name', 'email', 'contact'],
         'NAC_MANAGER': ['name', 'email', 'contact'],
+        'NAC MANAGER': ['이름', 'email', 'contact'],
+        # 'NAC_MANAGER': ['name', 'email', 'contact'],
         'MSMT_SERVER': ['name', 'ip', 'port', 'dns', 'id', 'pwd'],
         'TM_SERVER': ['name', 'ip', 'port', 'id', 'pwd'],
         'SMART_TM': ['name', 'ip', 'port', 'id', 'pwd'],
