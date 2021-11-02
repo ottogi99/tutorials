@@ -54,6 +54,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle('Test Signal')
 
         self.treeView = QTreeView()
+        self.treeView.header().setSectionResizeMode(QHeaderView.Interactive)
 
         # self.etc_load()
         # self.sys_load()
@@ -64,7 +65,8 @@ class MainWindow(QMainWindow):
             '매설계기 서버': ['이름', 'IP', 'PORT', 'DNS', 'ID', 'PASSWORD'],
             'TM 서버': ['이름', 'IP', 'PORT', 'ID', 'PASSWORD'],
             'SmartTM': ['이름', 'IP', 'PORT', 'ID', 'PASSWORD'],
-            '디바이스 서버': ['이름', 'DEFAULT_IP', 'IP', 'MODEL', 'SERIAL', 'ID', 'PASSWORD']
+            '디바이스 서버': ['이름', 'DEFAULT_IP', 'IP', 'MODEL', 'SERIAL', 'ID', 'PASSWORD'],
+            'ETOS': ['IP']
         }
 
         # self.data = self.read_ini(self.ini_file, self.sections)
@@ -143,7 +145,7 @@ class MainWindow(QMainWindow):
         self.treeView.setModel(model)
 
         while it.hasNext():
-            print('--start--')
+            # print('--start--')
             it.next()
             fileName = it.fileName()
             filePath = it.filePath()
