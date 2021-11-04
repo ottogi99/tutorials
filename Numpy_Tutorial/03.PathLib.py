@@ -114,3 +114,55 @@ dir_files = test_dir.glob('*')
 for dir_file in dir_files:
     print(dir_file)
 
+
+print('\n- 확장자가 csv 파일만 반환')
+dir_files = test_dir.glob('*.csv')
+
+for dir_file in dir_files:
+    print(dir_file)
+
+print('\n- ? 패턴 사용')
+dir_files = test_dir.glob('file0?.txt')
+
+for dir_file in dir_files:
+    print(dir_file)
+
+print('\n- 하위 디렉터리의 모든 파일과 디렉터리를 가져오도록 패턴을 지정')
+dir_files = test_dir.glob('./sub_dir1/*')
+
+for dir_file in dir_files:
+    print(dir_file)
+
+print('\n- 디렉터리의 모든 내용(하위 디렉터리의 내용 포함)을 가져오기 위한 패턴 ("**/*")')
+dir_files = test_dir.glob('**/*')
+
+for dir_file in dir_files:
+    print(dir_file)
+
+print('\n- 가져온 내용을 리스트로 변환 후 역순으로 변경')
+dir_files = test_dir.glob('**/*')
+
+r_dir_files = reversed(list(dir_files))
+
+for r_dir_file in r_dir_files:
+    print(r_dir_file)
+
+
+#입력한 디렉터리의 파일과 하위 디렉터리를 제거하는 함수'
+def remove_dir_contents(remove_dir):
+    dir_files = remove_dir.glob('**/*')
+    r_dir_files = reversed(list(dir_files))
+
+    for r_dir_file in r_dir_files:
+        if r_dir_file.is_file():
+            r_dir_file.unlink()
+            print("파일 제거:", r_dir_file)
+        elif r_dir_file.is_dir():
+            r_dir_file.rmdir()
+            print("디렉터리 제거:", r_dir_file)
+
+
+print('\n- 디렉터리를 지정한 후에 함수를 호출')
+test_dir = Path('C:/Repo/Python/tutorials/Numpy_Tutorial/sub_dir1')
+remove_dir_contents(test_dir)
+
