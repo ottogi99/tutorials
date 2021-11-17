@@ -14,9 +14,10 @@ class Widget(QMainWindow):
     def __init__(self):
         super().__init__()
         self.tableWidget = QTableWidget()
+        self.tabs = QTabWidget()
 
         self.init_ui()
-        self.setCentralWidget(self.tableWidget)
+        self.setCentralWidget(self.tabs)
 
     def init_ui(self):
         self.init_menu_bar()
@@ -58,37 +59,44 @@ class Widget(QMainWindow):
         self.show()
 
     def show_dialog(self):
-        fileName, selectedFilter = QFileDialog.getOpenFileName(self, 'Open File', '/', "Comma (*.csv *.dat)")
-        # for filePath in fileNames:
+        fileNames, selectedFilter = QFileDialog.getOpenFileNames(self, 'Open File', './data', "Comma (*.csv *.dat)")
+        for idx, fileName in enumerate(fileNames):
+            # 탭성하고 그 안에 표 출력하자(예정)
+            print(fileName)
+            # df = pd.read_csv(fileName, header=0, sep='\t')
+            df = pd.read_csv(fileName, header=0)
+            columnCount = len(df.columns)
+            rowCount = len(df.values)
+            print("column count:", columnCount)
+            print("rowCount count:", rowCount)
 
-        # 탭성하고 그 안에 표 출력하자(예정)
-        print(fileName)
-        df = pd.read_csv(fileName, header=0, sep='\t')
-        columnCount = len(df.columns)
-        rowCount = len(df.values)
-        print("column count:", columnCount)
-        print("rowCount count:", rowCount)
-        pass
-        # self.setTableWidget(df)
+            tab = QWidget()
+            layout = QVBoxLayout()
+            tableWidget = QTableWidget()
+            # self.setTableWidget(df)
 
-        self.tableWidget.setRowCount(rowCount)
-        self.tableWidget.setColumnCount(columnCount)
-        self.tableWidget.setHorizontalHeaderLabels(df.columns.values)
-        self.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        # # self.tableWidget.setEditTriggers(QAbstractItemView.DoubleClicked)
-        # # self.tableWidget.setEditTriggers(QAbstractItemView.AllEditTriggers)
-        self.tableWidget.horizontalHeader()
-        # # self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)               # 헤더의 폭이 위젯의 폭에 맞춰지도록 합니다.
-        # self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)      # 헤더의 폭이 컨텐츠의 폭에 맞춰지도록 합니다.
-        # self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)    # 헤더의 폭이 항목 값의 폭에 맞춰지도록 합니다.
-        self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)    # 헤더의 폭이 항목 값의 폭에 맞춰지도록 합니다.
+            tableWidget.setRowCount(rowCount)
+            tableWidget.setColumnCount(columnCount)
+            tableWidget.setHorizontalHeaderLabels(df.columns.values)
+            tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
+            # # self.tableWidget.setEditTriggers(QAbstractItemView.DoubleClicked)
+            # # self.tableWidget.setEditTriggers(QAbstractItemView.AllEditTriggers)
+            tableWidget.horizontalHeader()
+            # # self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)               # 헤더의 폭이 위젯의 폭에 맞춰지도록 합니다.
+            # self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)      # 헤더의 폭이 컨텐츠의 폭에 맞춰지도록 합니다.
+            # self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)    # 헤더의 폭이 항목 값의 폭에 맞춰지도록 합니다.
+            tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)    # 헤더의 폭이 항목 값의 폭에 맞춰지도록 합니다.
 
-        # print(df)
-        for i in range(rowCount):
-            for j in range(columnCount):
-                # print(df.iloc[i,j])
-                self.tableWidget.setItem(i, j, QTableWidgetItem(str(df.iloc[i, j])))
+            print(df)
+            for i in range(rowCount):
+                for j in range(columnCount):
+                    print(df.iloc[i,j])
+                    tableWidget.setItem(i, j, QTableWidgetItem(str(df.iloc[i, j])))
 
+
+            layout.addWidget(tableWidget)
+            tab.setLayout(layout)
+            self.tabs.addTab(tab, 'Tab_'+str(idx))
         # self.tableWidget.setHorizontalHeaderLabels(df.columns.values)
 
         # vbox = QVBoxLayout()
