@@ -1,6 +1,6 @@
 """
 표 데이터 선택
-판다스의 sERIES 데이터와 DataFrame 데이터에서 특정한 행이나 열 데이터를 선택하거나,
+판다스의 Series 데이터와 DataFrame 데이터에서 특정한 행이나 열 데이터를 선택하거나,
 원하지 않는 데이터를 삭제하는 방법
 """
 import pandas as pd
