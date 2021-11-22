@@ -46,5 +46,32 @@ print(dropna_subset)
 결측치에 특정 값을 채우는 방법
 DataFrame_data.fillna(value=None, method=None, axis=None)
 """
+fillna_zero = df.fillna(0)      # 모든 결측치를 0으로 채움 `df.fillna(value=0)`과 동일
+print(fillna_zero)
+
+fillna_content = df.fillna('누락')    # `df.fillna(value='누락')`
+print(fillna_content)
+
+"""
+데이터 열의 결측치를 다음 index의 비결측치로 채우고 싶으면 method='bfill' 을 인수로 입력
+만약 다음 index의 값도 결측치라면 비결측치가 나올 때까지 계속해서 그 다음 값을 찾아 결측치를 채웁니다.
+"""
+fillna_bfill = df.fillna(method='bfill')    # df.fillna(method='bfill', axis=0)
+print(fillna_bfill)
+
+"""
+데이터 열의 결측치를 이전 index의 비결측치로 채우고 싶으면 method='ffill'을 인수로 입력
+만약 이전 이전 index의 값도 결측치라면 비결측치가 나올 때까지 계속해서 그 이전 값을 찾아 결측치를 채웁니다.
+"""
+fillna_ffill = df.fillna(method='ffill')    # df.fillna(method='ffill', axis=0)
+print(fillna_ffill)
+
+"""
+데이터의 열별도 다른 값을 채우고 싶은 경우 딕셔너리 형식으로 열 이름과 채울 값을 지정할 수 있음
+"""
+values = {"세단A": 500, "트럭X": 200, "왜건K": 0, "밴Q": 0}
+fillna_values = df.fillna(values)   # df.fillna(value=values)
+print(fillna_values)
+
 
 
